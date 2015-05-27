@@ -1,0 +1,296 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"  
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <f:view contentType="text/html">
+
+        <h:head>
+            <title>Power Reporter</title>
+            <h:outputStylesheet name="css/bootstrap.min.css"/>
+            <h:outputScript name="js/script.js"/>
+            <style>
+                .ui-widget, .ui-widget .ui-widget {
+                    font-size: 90%;
+                }
+            </style>
+        </h:head>
+        <h:body>
+
+            <div class="container">
+                <h:form id="form1">
+                    <p:messages id="growl1" closable="true" showDetail="true"/>
+                    <p:spacer height="10"/> 
+                    <p:panel header="Profile List" rendered="#{setupController.showProfileListPanel}"
+                             toggleable="true">
+                        <p:dataTable widgetVar="profileListTbl" value="#{setupController.profiles}" var="item"
+                                     id="profileListtable"
+                                     selectionMode="single" rowKey="#{item}" 
+                                     selection="#{setupController.selectedProfile}">
+                            <p:ajax event="rowSelect" process="profileListtable" update="profileListtable"/>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="ProfileName"/>
+                                </f:facet>
+                                <h:outputText value="#{item.profileName}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="PortNo"/>
+                                </f:facet>
+                                <h:outputText value="#{item.portNo}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="IpAdd"/>
+                                </f:facet>
+                                <h:outputText value="#{item.ipAdd}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Database"/>
+                                </f:facet>
+                                <h:outputText value="#{item.databaseName}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="DatabaseType"/>
+                                </f:facet>
+                                <h:outputText value="#{item.databaseType}"/>
+                            </p:column>
+                            <f:facet name="footer">
+                                <h:commandButton value="New Profile" action="#{setupController.newConnection()}"
+                                                 rendered="#{!setupController.showNewProfilePanel}"/>
+                                <h:commandButton value="Edit Profile" action="#{setupController.editConnection()}"
+                                                 rendered="#{!setupController.showNewProfilePanel}"/>
+                                <h:commandButton id="retrieveDataBtn2" value="Preview Tables" 
+                                                 action="#{setupController.retrieveTables()}"
+                                                 rendered="#{!setupController.showNewProfilePanel}"/>
+                            </f:facet>
+                        </p:dataTable>
+                    </p:panel>
+
+                    <p:spacer height="10"/> 
+                    <p:panel id="connectionPanel" header="Database Connection Parameters" collapsed="false" toggleable="true"
+                             rendered="#{setupController.showNewProfilePanel}">
+
+                        <p:panelGrid columns="6">   
+                            <p:outputLabel for="profileName" value="Profile Name: "/>
+                            <p:inputText id="profileName" value="#{setupController.reportProfile.profileName}" required="true"/>
+                            <p:outputLabel for="ipd" value="IP Address: "/>
+                            <p:inputText id="ipd" value="#{setupController.reportProfile.ipAdd}" required="true"/>
+                            <p:outputLabel for="portNo" value="Port No: "/>
+                            <p:inputText id="portNo" value="#{setupController.reportProfile.portNo}" required="true"/>
+                            <p:outputLabel for="databaseName" value="Database Name: "/>
+                            <p:inputText id="databaseName" value="#{setupController.reportProfile.databaseName}" required="true"/>
+                            <p:outputLabel for="username" value="Username: "/>
+                            <p:inputText value="#{setupController.reportProfile.username}" id="username" required="true"/>
+                            <p:outputLabel for="password" value="Password: "/>
+                            <p:inputText value="#{setupController.reportProfile.password}" id="password" required="true"/>
+                            <p:outputLabel for="databaseType" value="Database Type: "/>
+                            <h:selectOneMenu value="#{setupController.reportProfile.databaseType}" id="databaseType" required="true">
+                                <f:selectItem itemLabel="Select..." itemValue=""/>
+                                <f:selectItem itemLabel="MySQL" itemValue="mysql"/>
+                                <f:selectItem itemLabel="Sybase" itemValue="sybase"/>
+                                <f:selectItem itemLabel="Oracle" itemValue="oracle"/>
+                            </h:selectOneMenu>
+
+                        </p:panelGrid>
+                        <br/>
+                        <h:commandButton id="testBtn" value="Test Connection" 
+                                         action="#{setupController.testConnection()}"/>
+                        <p:spacer height="15"/>
+                        <h:commandButton id="retrieveDataBtn" value="Preview Tables" 
+                                         action="#{setupController.retrieveTables()}"/>
+                        <p:spacer height="15"/>
+                        <h:commandButton id="saveConnectionBtn" value="Save Connection" 
+                                         action="#{setupController.saveConnection()}"/>
+                        <p:spacer height="15"/>
+                        
+                    </p:panel>
+                    <p:spacer height="10"/>
+
+                    <p:panel header="Database Tables" toggleable="true" 
+                             rendered="#{setupController.showDatabaseTablePanel}">
+
+                        <p:dataTable id="tableTable" value="#{setupController.tables}" var="table" selectionMode="single"
+                                     selection="#{setupController.selectedTable}" rowKey="#{table}" paginator="true"
+                                     rows="30" rowsPerPageTemplate="5,10,15,20,25,30"
+                                     >
+                            <p:ajax event="rowSelect" process="tableTable" 
+                                    update=":form1:colDatatable :form1:paramNamePanelGrid"/>
+                            <p:column>
+                                <f:facet name="header">Database Tables (Total:: #{setupController.tables.size()})</f:facet>
+                                <h:outputText value="#{table}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <br/>
+                    <p:panel rendered="false" header="Report Columns" toggleable="true" id="colPanel">
+
+                        <p:dataTable id="colDatatable" widgetVar="colDT"
+                                     value="#{setupController.columns}" var="col">
+                            <p:column>
+                                <f:facet name="header">Column Name</f:facet>
+                                <h:outputText value="#{col.originalName}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Data Type</f:facet>
+                                <h:outputText value="#{col.prefferedName}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header"></f:facet>
+                                <h:commandButton action="#{setupController.deleteColumn(col)}" 
+                                                 value="Remove">
+                                    <f:ajax execute="@this" render=":form1:colDatatable :form1:growl1"/>
+                                </h:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                        <br/>
+                        <h:commandButton action="#{setupController.addColumn()}" rendered="false"
+                                         id="colBtn" value="Add Column" onclick="change()">
+                            <f:ajax execute="colName colDataType rowSum @this colDatatable" render="growl1"/>
+                        </h:commandButton>
+                    </p:panel>
+                    <br/>
+                    <p:panel header="Report Parameters" toggleable="true" rendered="false">
+                        <p:dataTable value="#{setupController.report.reportParameters}" var="paramP"
+                                     id="paramDatatable" widgetVar="paramDT">
+                            <p:column>
+                                <f:facet name="header">Parameter Name</f:facet>
+                                <h:outputText value="#{paramP.label}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Component Type</f:facet>
+                                <h:outputText value="#{paramP.componentType}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Drop Down Elements</f:facet>
+                                <p:dataTable value="#{paramP.dropDowns}" var="drop" rendered="#{paramP.componentType eq 'DropDown'}" 
+                                             id="dropDownDatatable" widgetVar="dropDownDT">
+                                    <p:column>
+                                        <f:facet name="header">Label</f:facet>
+                                        <h:outputText value="#{drop.label}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">Value</f:facet>
+                                        <h:outputText value="#{drop.value}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header"></f:facet>
+                                        <h:commandButton action="#{setupController.deleteDropDown(drop)}" 
+                                                         value="Remove">
+                                            <f:ajax execute="@this" render=":form1:paramDatatable:dropDownDatatable :form1:growl1"/>
+                                        </h:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                                <p:panelGrid columns="4" rendered="#{paramP.componentType eq 'DropDown'}">
+                                    <p:outputLabel for="dropDownLabel" value="Label: "/>
+                                    <p:inputText value="#{setupController.dropDown.label}" id="dropDownLabel"/>
+                                    <p:outputLabel for="dropDownValue" value="Value: "/>
+                                    <p:inputText value="#{setupController.dropDown.value}" id="dropDownValue"/>
+                                </p:panelGrid>
+                                <h:commandButton action="#{setupController.addDropDownElement(paramP)}" 
+                                                 rendered="#{paramP.componentType eq 'DropDown'}"
+                                                 id="dropBtn" value="Add Element" onclick="change()">
+                                    <f:ajax execute=":form1:paramDatatable:dropDownLabel :form1:paramDatatable:dropDownValue  @this" 
+                                            render=":form1:paramDatatable:dropDownDatatable :form1:growl1"/>
+                                </h:commandButton>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header"></f:facet>
+                                <h:commandButton value="Delete" action="#{setupController.deleteParameter(paramP)}">
+                                    <f:ajax execute="@this" render=":form1:paramDatatable :form1:growl1"/>
+                                </h:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                        <p:panelGrid id="paramNamePanelGrid" columns="6">
+                            <p:outputLabel for="paramName" value="Parameter Name: "/>
+                            <h:selectOneMenu value="#{setupController.reportParameter.label}" 
+                                             id="paramName">
+                                <f:selectItem itemValue="" itemLabel="Select..."/>
+                                <f:selectItems var="colo" value="#{setupController.columns}" 
+                                               itemValue="#{colo}" 
+                                               itemLabel="#{colo.originalName}"/>
+                            </h:selectOneMenu>
+                            <p:outputLabel for="paramCompType" value="Component Type: "/>
+                            <h:selectOneMenu value="#{setupController.reportParameter.componentType}" 
+                                             id="paramCompType">
+                                <f:selectItem itemValue="" itemLabel="Select..."/>
+                                <f:selectItem itemValue="TextField" itemLabel="TextField"/>
+                                <f:selectItem itemValue="Calendar" itemLabel="Calendar"/>
+                                <f:selectItem itemValue="DropDown" itemLabel="Drop Down"/>
+                            </h:selectOneMenu>
+                        </p:panelGrid>
+                        <h:commandButton action="#{setupController.addParameter()}" id="paramBtn" value="Add Parameter">
+                            <f:ajax execute="paramName paramCompType @this" 
+                                    render="paramName paramCompType :form1:paramDatatable :form1:growl1"/>
+                        </h:commandButton>
+
+                    </p:panel>
+
+                    <br/>
+
+
+                    <p:panel header="Report Details" toggleable="true" rendered="false">
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p:panelGrid columns="2">
+                                        <p:outputLabel for="reportName" value="Report Name: "/>
+                                        <p:inputText value="#{setupController.report.reportName}" 
+                                                     id="reportName" style="width: 300px;"/>
+                                        <p:outputLabel for="reportDesc" value="Report Description: "/>
+                                        <p:inputTextarea value="#{setupController.report.reportName}"
+                                                         id="reportDesc" style="width: 600px;"/>
+                                    </p:panelGrid>
+                                    <br/>
+                                    <p:panelGrid columns="4">
+                                        <p:outputLabel value="Download Formats: "/>
+                                        <p:panelGrid columns="3">
+                                            <p:selectBooleanCheckbox value="#{setupController.pdf}" 
+                                                                     id="pdf" itemLabel="PDF"/>
+                                            <p:selectBooleanCheckbox value="#{setupController.excel}" 
+                                                                     id="excel" itemLabel="Excel"/>
+                                            <p:selectBooleanCheckbox value="#{setupController.csv}"
+                                                                     id="csv" itemLabel="CSV"/>
+                                        </p:panelGrid>
+                                    </p:panelGrid>
+                                    <br/>
+                                    <p:panelGrid columns="2" rendered="false">
+                                        <p:outputLabel for="dataSource" value="Report Datasource"/>
+                                        <p:selectOneMenu value="#{setupController.dataSource}">                                                       id="dataSource">
+                                            <f:selectItem itemValue="" itemLabel="Select..."/>
+                                            <f:selectItem itemValue="mysql" itemLabel="MySQL DS"/>
+                                            <f:selectItem itemValue="sybase" itemLabel="SyBase DS"/>
+                                            <f:selectItem itemValue="oracle" itemLabel="Oracle DS"/>
+                                        </p:selectOneMenu>
+                                    </p:panelGrid>
+                                </div>
+                            </div>
+                        </div>
+                    </p:panel>
+                    <h:commandButton action="#{setupController.renderPreview()}" rendered="false"
+                                     id="previewBtn" value="Preview"/>
+                </h:form>
+                
+                <h:form id="form2">
+                    <h:commandButton id="cancelConnectionBtn" value="Cancel" 
+                                     action="#{setupController.cancelConnection()}" 
+                                     rendered="#{setupController.showNewProfilePanel}">
+                    </h:commandButton>
+                </h:form>
+             
+
+            </div>
+
+        </h:body>
+
+    </f:view>
+</html>
+

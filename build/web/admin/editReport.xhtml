@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./adminTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <ui:define name="adminContent">
+        <div class="container">
+            <div class="row">
+                <p:messages id="msgs" closable="true"/>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div style="margin-left: 100px;">
+                            <p:panel header="Edit Report" style="width: 1000px;">
+                                <h:form>
+                                    <p:panelGrid columns="2">
+                                        <p:outputLabel value="Connection Profile:" for="connectionProfile" />
+                                        <p:selectOneMenu id="connectionProfile" value="#{setupController.selectedReport.connectionProfile.id}" >
+                                            <f:selectItems value="#{setupController.profiles}" var="profile"
+                                                           itemLabel="#{profile.profileName} - #{profile.ipAdd}"
+                                                           itemValue="#{profile.id}"/>
+                                        </p:selectOneMenu>
+                                        <p:outputLabel value="Report Name:" for="reportName" />
+                                        <p:inputText id="reportName" value="#{setupController.selectedReport.reportName}" title="ReportName" 
+                                                     styleClass="inputWide"/>
+                                        <p:outputLabel value="Report Description:" for="reportDescription" />
+                                        <p:inputTextarea id="reportDescription" value="#{setupController.selectedReport.reportDescription}"
+                                                         title="ReportDescription" styleClass="inputWide"/>
+                                        <p:outputLabel value="Report Query:" for="reportQuery" />
+                                        <p:inputTextarea id="reportQuery" value="#{setupController.selectedReport.reportQuery}" 
+                                                         title="ReportQuery" 
+                                                         style="width: 700px; height: 300px; font-size: 16px;"/>
+                                        <p:outputLabel value="Downloadable:" for="downloadable" />
+                                        <p:selectBooleanCheckbox id="downloadable" value="#{setupController.selectedReport.downloadable}" 
+                                                     />
+                                        <p:outputLabel value=""/>
+                                        <h:commandLink styleClass="btn-lg"
+                                                       action="#{setupController.updateSelectedReport()}">
+                                            <span class="glyphicon glyphicon-pencil">  </span>
+                                            Update
+                                        </h:commandLink>
+                                    </p:panelGrid>
+                                </h:form>
+                                <h:form>
+                                    <h:commandLink styleClass="btn-lg" value="Cancel"
+                                                   style="float: right;"
+                                                   action="/admin/reports?faces-redirect=true">
+                                        <span class="glyphicon glyphicon-arrow-left">  </span>
+                                    </h:commandLink>
+                                </h:form>
+                            </p:panel>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </ui:define>
+
+</ui:composition>

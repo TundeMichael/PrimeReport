@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./adminTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <ui:define name="adminTitle">
+        Report Preview
+    </ui:define>
+
+    <ui:define name="adminContent">
+        <div class="container-fluid">
+            <center>Report Preview</center> 
+            <p:panelGrid columns="2">
+                <h:form id="backForm">
+                    <h:commandButton action="#{setupController.getBackUrl()}" styleClass="btn-lg" 
+                                     id="backBtn" value="Back" rendered="#{setupController.backUrl ne null}"/>
+                </h:form>  
+                <h:form id="saveForm">
+                    <h:commandButton action="saveReport?faces-redirect=true" styleClass="btn-lg" 
+                                     id="saveBtn" value="Save Report"/>
+                </h:form>  
+            </p:panelGrid>
+        <p:panel id="panelID" header="REPORT PREVIEW">
+            <p:growl id="growl1" sticky="true"/>
+            <h:panelGroup binding="#{previewReportController.panelGroup}"/>
+            <p:spacer height="40"/>  
+            <br/><br/><br/>
+        </p:panel>
+        </div>
+    </ui:define>
+</ui:composition>
+

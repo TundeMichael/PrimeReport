@@ -1,0 +1,70 @@
+
+/* 
+    Created on : Jul 31, 2014, 12:25:33 PM
+    Author     : michael.orokola
+*/
+
+.ui-widget, .ui-widget .ui-widget {
+    font-size: 95%;
+}
+body{
+    margin-top: 20px;
+}
+#logo{
+    background-image: url("../images/support_logo.png");   
+    float: right; width: 241px; height: 90px; margin-top: 0px; padding: 0px;
+}
+
+.jumbotron{
+    background-image: url("../images/report red.png");
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100px;
+    background-color: #6699ff;
+}
+
+.ui-toolbar.ui-widget-header{
+    background-image: none; background-color: #fff;
+    border: none;
+}
+
+.ui-menuitem-text, .ui-button-text{
+    color: #0099ff;
+}
+.ui-datatable-header {
+    color: #0099ff;
+    background: url("../images/support_bg.gif");
+}
+.customStyleClass .ui-state-default{
+    color: #fff;
+    font-family: sans-serif; 
+    font-weight: lighter;
+    background: url("../images/support_bg.gif");
+    background-color: #fff;
+}
+
+.panelGridLeftMarginBig{
+    margin-left: 150px;
+}
+
+.panelGridLeftMargin{ 
+    margin-left: 100px;
+}
+
+.btn{ width: auto;}
+
+.ui-tabs {
+    font-size:0.9em;
+}
+
+.titleStyle1{
+    font-size:1.0em;
+}
+
+.inputWide{
+    width: 200px;
+}
+
+.inputShort{
+    width: 100px;
+}

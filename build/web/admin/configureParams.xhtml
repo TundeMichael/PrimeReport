@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./adminTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <ui:define name="adminTitle">
+        Configure Query Parameters And Components
+    </ui:define>
+
+    <ui:define name="adminContent">
+        <div class="container-fluid">
+            <h:form id="backForm">
+                <h:commandButton action="customizeColumns?faces-redirect=true" styleClass="btn-lg" 
+                                 id="backBtn" value="Back"/>
+            </h:form>  
+        <center>
+            <p:panel id="panelID" header="CONFIGURE REPORT PARAMETERS">
+                <h:form id="runSQLForm">
+                    <center>
+                        <p:panelGrid columns="1">
+                            <h4>Please replace all test data with appropriate placeholders!</h4>
+                            <p:inputTextarea value="#{configureParameterController.query}"
+                                             id="reportQuery" style="width: 800px; height: 200px; font-size: 16px;"
+                                             />
+                            <h:commandButton action="#{configureParameterController.analyzeQuery()}" id="analyzeBtn" 
+                                             value="Analyze Query">
+                                <f:ajax execute="@form" render=":pForm:paramTable :pForm:growl1"/>
+                            </h:commandButton>
+                        </p:panelGrid>
+                    </center>
+                    <p:spacer height="20"/>
+                </h:form>
+                <h:form id="pForm">
+                    <p:messages id="growl1" closable="true"/>
+                    <center>
+                        <h:commandButton action="#{setupController.navigate('configureParams?faces-redirect=true', 'preview?faces-redirect=true')}"
+                                         id="preBtn" value="Preview"
+                                         styleClass="btn-lg"/>
+                        <p:spacer width="50"/>
+                    </center>
+                    <p:spacer height="5"/>  
+                    <p:dataTable value="#{configureParameterController.queryParams}" var="parameter"
+                                 editable="true" paginator="true" rows="10" rowsPerPageTemplate="10,20,50"
+                                 id="paramTable">
+                        <p:column>
+                            <f:facet name="header">Position In Query</f:facet>
+                            <h:outputText value="#{parameter.queryPosition}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">Label</f:facet>
+                            <p:inputText value="#{parameter.label}" rendered="#{parameter.queryPosition ne '@startDate@' and parameter.queryPosition ne '@endDate@' and !parameter.userProperty}" 
+                                         required="true" requiredMessage="Label is required"/>
+                            <h:outputText value="#{parameter.label}" rendered="#{(parameter.queryPosition eq '@startDate@' || parameter.queryPosition eq '@endDate@') and !parameter.userProperty}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">Component Type</f:facet>
+                            <h:outputText value="#{parameter.componentType}" rendered="#{parameter.queryPosition eq '@startDate@' || parameter.queryPosition eq '@endDate@'}"/>
+                            <p:selectOneMenu value="#{parameter.componentType}"
+                                             rendered="#{!parameter.userProperty and parameter.queryPosition ne '@startDate@' and parameter.queryPosition ne '@endDate@'}"
+                                             required="true" requiredMessage="Component Type is required">
+                                <f:selectItem itemLabel="Select..." itemValue=""/>
+                                <f:selectItem itemLabel="TextField" itemValue="TextField"/>
+                                <f:selectItem itemLabel="Calendar" itemValue="Calendar"/>
+                                <f:selectItem itemLabel="DropDown" itemValue="DropDown"/>
+                                <p:ajax process=":pForm:paramTable" update=":pForm:paramTable"/>
+                            </p:selectOneMenu>
+                            <h:dataTable value="#{parameter.dropDowns}" var="drop" 
+                                         rendered="#{parameter.componentType eq 'DropDown' and !parameter.userProperty}" 
+                                         id="dropDownDatatable">
+                                <h:column>
+                                    <f:facet name="header">Label</f:facet>
+                                    <h:outputText value="#{drop.label}"/>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">Value</f:facet>
+                                    <h:outputText value="#{drop.value}"/>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header"></f:facet>
+                                    <h:commandButton value="Delete" action="#"/>
+                                </h:column>
+                            </h:dataTable>
+                            <p:commandButton action="#{configureParameterController.setRenderDrodown(true)}"
+                                             rendered="#{parameter.componentType eq 'DropDown' and !parameter.userProperty and !configureParameterController.renderDrodownPanel}"
+                                             id="dropBtn" value="Add" icon="ui-icon-plus">
+                                <p:ajax process=":pForm:paramTable" update=":pForm:paramTable"/>
+                            </p:commandButton>
+                            <p:panelGrid columns="2" rendered="#{parameter.componentType eq 'DropDown' and !parameter.userProperty and configureParameterController.renderDrodownPanel}">
+                                <p:outputLabel for="dropDownLabel1" value="Label: "/>
+                                <p:inputText value="#{configureParameterController.dropdown.label}" 
+                                             id="dropDownLabel1" />
+                                <p:outputLabel for="dropDownValue1" value="Value: "/>
+                                <p:inputText value="#{configureParameterController.dropdown.value}" 
+                                             id="dropDownValue1" />
+                            </p:panelGrid> 
+                            <p:commandButton action="#{configureParameterController.prepareAddDropDown(parameter)}" 
+                                             id="dropBtn1" value="Add" onclick="change()"
+                                             rendered="#{parameter.componentType eq 'DropDown' and !parameter.userProperty and configureParameterController.renderDrodownPanel}"
+                                             icon="ui-icon-plus">
+                                <p:ajax process=":pForm:paramTable" update=":pForm:paramTable"/>
+                            </p:commandButton>
+                            <p:commandButton action="#{configureParameterController.setRenderDrodown(false)}"
+                                             id="doneBtn" value="Close" onclick="change()"
+                                             rendered="#{parameter.componentType eq 'DropDown' and !parameter.userProperty and configureParameterController.renderDrodownPanel}"
+                                             icon="ui-icon-cancel">
+                                <p:ajax process=":pForm:paramTable" update=":pForm:paramTable"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">Required</f:facet>
+                            <p:selectBooleanCheckbox value="#{parameter.required}"
+                                                     rendered="#{parameter.queryPosition ne '@startDate@' and parameter.queryPosition ne '@endDate@'}"/>
+                            <h:outputText value="#{parameter.required}" rendered="#{parameter.queryPosition eq '@startDate@' || parameter.queryPosition eq '@endDate@'}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">Data Type</f:facet>
+                            <h:outputText value="#{parameter.dataType}" rendered="#{parameter.queryPosition eq '@startDate@' || parameter.queryPosition eq '@endDate@'}"/>
+                            <p:selectOneMenu value="#{parameter.dataType}"
+                                             rendered="#{parameter.queryPosition ne '@startDate@' and parameter.queryPosition ne '@endDate@'}"
+                                             required="true" requiredMessage="Data Type is required">
+                                <f:selectItem itemLabel="Select..." itemValue=""/>
+                                <f:selectItem itemLabel="String" itemValue="String"/>
+                                <f:selectItem itemLabel="Date" itemValue="Date"/>
+                                <f:selectItem itemLabel="Number" itemValue="Number"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">UI Date Pattern</f:facet>
+                            <p:selectOneMenu value="#{parameter.calendarPattern}"
+                                             rendered="#{parameter.componentType eq 'Calendar' and !parameter.userProperty}"
+                                             required="true" requiredMessage="UI Date pattern is required">
+                                <f:selectItem itemLabel="Select..." itemValue=""/>
+                                <f:selectItem itemLabel="EEEEEE, MM, yyyy hh:mm:ss" itemValue="EEEEEE, MM, yyyy hh:mm:ss"/>
+                                <f:selectItem itemLabel="EEEEEE, MM, yyyy" itemValue="EEEEEE, MM, yyyy"/>
+                                <f:selectItem itemLabel="EEE, MM, yyyy hh:mm:ss" itemValue="EEE, MM, yyyy hh:mm:ss"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">DB Date Pattern</f:facet>
+                            <p:selectOneMenu value="#{parameter.sqlDatePattern}"
+                                             rendered="#{parameter.componentType eq 'Calendar' and !parameter.userProperty}"
+                                             required="true" requiredMessage="Database Date pattern is required">
+                                <f:selectItem itemLabel="Select..." itemValue=""/>
+                                <f:selectItem itemLabel="String" itemValue="String"/>
+                                <f:selectItem itemLabel="Date" itemValue="Date"/>
+                                <f:selectItem itemLabel="Number" itemValue="Number"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">Retrieve From User</f:facet>
+                            <h:outputText value="#{parameter.userProperty}" rendered="#{parameter.queryPosition eq '@startDate@' || parameter.queryPosition eq '@endDate@'}"/>
+                            <p:selectBooleanCheckbox value="#{parameter.userProperty}"
+                                                     rendered="#{parameter.queryPosition ne '@startDate@' and parameter.queryPosition ne '@endDate@'}">
+                                <p:ajax update=":pForm:paramTable"/>
+                            </p:selectBooleanCheckbox>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">User Ppty Name</f:facet>
+                            <p:inputText id="userPptyName" value="#{parameter.userPropertyName}" 
+                                         rendered="#{parameter.userProperty}" required="true"
+                                         requiredMessage="Please specify the user property name for this parameter"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:panel>
+
+            <p:dialog header="Adding Dropdown element" widgetVar="dropDownDlg" showEffect="explode" 
+                      hideEffect="explode" height="150" width="300" modal="true">  
+                <h:form id="dlgForm">
+                    <p:panelGrid columns="2">
+                        <p:outputLabel for="dropDownLabel" value="Label: "/>
+                        <p:inputText value="#{configureParameterController.dropdown.label}" id="dropDownLabel"/>
+                        <p:outputLabel for="dropDownValue" value="Value: "/>
+                        <p:inputText value="#{configureParameterController.dropdown.value}" id="dropDownValue"/>
+                    </p:panelGrid>
+                    <p:commandButton action="#{configureParameterController.prepareAddDropDown(null)}" 
+                                     id="dropBtn" value="Add" onclick="change()"
+                                     update=":pForm:paramTable">
+                    </p:commandButton>
+                </h:form> 
+            </p:dialog>  
+        </center>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        </div>
+    </ui:define>
+    
+</ui:composition>
+
+
+

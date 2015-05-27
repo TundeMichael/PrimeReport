@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./adminTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <ui:define name="adminTitle">
+        Database Profile Setup
+    </ui:define>
+
+    <ui:define name="adminContent">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h:form id="form1">
+
+                        <p:messages id="growl1" closable="true" showDetail="true"/>
+                        <p:spacer height="10"/> 
+                        <p:panel header="Database Profile List" 
+                                 toggleable="true">
+                            <p:dataTable widgetVar="profileListTbl" value="#{setupController.profiles}" var="item"
+                                         id="profileListtable"
+                                         selectionMode="single" rowKey="#{item}" 
+                                         selection="#{setupController.selectedProfile}">
+                                <p:ajax event="rowSelect" process="profileListtable" update="profileListtable"/>
+
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="ProfileName"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.profileName}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="PortNo"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.portNo}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="IpAdd"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.ipAdd}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Database"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.databaseName}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="DatabaseType"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.databaseType}"/>
+                                </p:column>
+                                <f:facet name="footer">
+                                    <h:commandButton value="New Profile" action="#{setupController.newConnection()}"
+                                                     rendered="#{!setupController.showNewProfilePanel}"/>
+                                    <h:commandButton value="Edit Profile" action="#{setupController.editConnection()}"
+                                                     rendered="#{!setupController.showNewProfilePanel}"/>
+                                    <h:commandButton id="createReport" value="Create Reports" 
+                                                     action="reportSetup.xhtml?faces-redirect=true"/>
+                                </f:facet>
+                            </p:dataTable>
+                        </p:panel>
+
+                        <p:spacer height="10"/> 
+
+                        <p:panel id="connectionPanel" header="Database Connection Parameters" collapsed="false" toggleable="true"
+                                 rendered="#{setupController.showNewProfilePanel}">
+
+                            <p:panelGrid columns="6">   
+                                <p:outputLabel for="profileName" value="Profile Name: "/>
+                                <p:inputText id="profileName" value="#{setupController.reportProfile.profileName}" required="true"/>
+                                <p:outputLabel for="ipd" value="IP Address: "/>
+                                <p:inputText id="ipd" value="#{setupController.reportProfile.ipAdd}" required="true"/>
+                                <p:outputLabel for="portNo" value="Port No: "/>
+                                <p:inputText id="portNo" value="#{setupController.reportProfile.portNo}" required="true"/>
+                                <p:outputLabel for="databaseName" value="Database Name: "/>
+                                <p:inputText id="databaseName" value="#{setupController.reportProfile.databaseName}" required="true"/>
+                                <p:outputLabel for="username" value="Username: "/>
+                                <p:inputText value="#{setupController.reportProfile.username}" id="username" required="true"/>
+                                <p:outputLabel for="password" value="Password: "/>
+                                <p:inputText value="#{setupController.reportProfile.password}" id="password" required="true"/>
+                                <p:outputLabel for="databaseType" value="Database Type: "/>
+                                <h:selectOneMenu value="#{setupController.reportProfile.databaseType}" id="databaseType" required="true">
+                                    <f:selectItem itemLabel="Select..." itemValue=""/>
+                                    <f:selectItem itemLabel="MySQL" itemValue="mysql"/>
+                                    <f:selectItem itemLabel="Sybase" itemValue="sybase"/>
+                                    <f:selectItem itemLabel="Oracle" itemValue="oracle"/>
+                                </h:selectOneMenu>
+
+                            </p:panelGrid>
+                            <br/>
+                            <h:commandButton id="testBtn" value="Test Connection" 
+                                             action="#{setupController.testConnection()}"/>
+                            <p:spacer height="15"/>
+                            <h:commandButton id="retrieveDataBtn" value="Preview Tables" 
+                                             action="#{setupController.retrieveTables()}"/>
+                            <p:spacer height="15"/>
+                            <h:commandButton id="saveConnectionBtn" value="Save Connection" 
+                                             action="#{setupController.saveConnection()}"/>
+                            <p:spacer height="15"/>
+
+                        </p:panel>
+                        <p:spacer height="10"/>
+
+                    </h:form>
+
+                    <h:form id="form2">
+                        <h:commandButton id="cancelConnectionBtn" value="Cancel" 
+                                         action="#{setupController.cancelConnection()}" 
+                                         rendered="#{setupController.showNewProfilePanel}">
+                        </h:commandButton>
+                    </h:form>
+
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

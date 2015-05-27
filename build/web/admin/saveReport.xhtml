@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./adminTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <ui:define name="adminTitle">
+        Save Report | Save The Finish Report
+    </ui:define>
+
+    <ui:define name="adminContent">
+        <div class="container-fluid">
+            <h:form>
+
+            <p:messages id="msgs" closable="true" showDetail="true"/>
+
+            <div class="container">
+                <div class="row">
+                    <h2>
+                        <center>Enter Report Details</center>
+                        <center>
+                            <h:commandButton action="#{setupController.navigate('saveReport?faces-redirect=true', 'preview?faces-redirect=true')}"
+                                         id="preBtn" value="Preview"
+                                         styleClass="btn-lg"/>
+                        </center>
+                    </h2>
+                    <p:panel header="Enter Report Details">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Report Name:" for="reportName" />
+                            <p:inputText id="reportName" value="#{setupController.report.reportName}" 
+                                         title="ReportName" />
+                            <p:outputLabel value="Report Description:" for="reportDescription" />
+                            <p:inputTextarea id="reportDescription" 
+                                         value="#{setupController.report.reportDescription}" 
+                                         title="ReportDescription" style="width: 200px; height: 150px;"/>
+                            <p:outputLabel value="Excel Download:" for="download" />
+                            <p:selectBooleanCheckbox id="download" 
+                                                     value="#{setupController.report.downloadable}"/>
+                            <p:outputLabel value=""/>
+                            <h:commandButton value="Save" styleClass="btn-lg"
+                                             action="#{setupController.saveReport()}"/>
+                        </p:panelGrid>
+                    </p:panel>
+                </div>
+            </div>
+        </h:form>
+        </div>
+    </ui:define>
+    
+</ui:composition>
+
+

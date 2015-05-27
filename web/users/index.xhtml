@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./usersTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <ui:define name="usersTitle">
+        usersTitle
+    </ui:define>
+
+    <ui:define name="usersContent">
+        <div class="container-fluid">
+            <p:growl id="growl" life="3000" sticky="true"/>
+            <h:form id="menuForm">
+                <!-- This panelGroup is for the menubar of reports -->
+                <h:panelGroup binding="#{userController.panelGroup}"/>
+            </h:form>
+            <h:form id="reportForm">
+                <p:commandButton value=" Load #{userController.selectedReport.reportName}"
+                                 icon="ui-icon-refresh" rendered="#{!userController.renderReport}"
+                                 id="refreshBtn">
+                    <p:ajax update="@form" listener="#{userController.changeRender()}"/>
+                </p:commandButton>
+                <h:panelGroup id="reportPanel" binding="#{userController.reportPanelGroup}"
+                              rendered="#{userController.renderReport}"/>
+            </h:form>
+        </div>
+    </ui:define>
+    
+</ui:composition>

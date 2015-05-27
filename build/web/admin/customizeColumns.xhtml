@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./adminTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <ui:define name="adminTitle">
+        Customize Report Columns
+    </ui:define>
+
+    <ui:define name="adminContent">
+        <div class="container">
+            <div class="row">
+                <h3>
+                    <center>Customize Report Columns</center>
+                </h3>
+                    <h:form id="pForm">
+                        <center> 
+                            <p:panelGrid columns="3">
+                                <h:commandButton action="reportSetup?faces-redirect=true" styleClass="btn-lg" 
+                                                 id="backBtn" value="Back"/>
+                                <h:commandButton action="#{setupController.navigate('customizeColumns?faces-redirect=true', 'preview?faces-redirect=true')}" 
+                                                 id="preBtn" value="Preview" styleClass="btn-lg"/>
+                                <h:commandButton action="configureParams?faces-redirect=true" id="configureBtn" 
+                                                 value="Configure Parameters" styleClass="btn-lg"/>
+                            </p:panelGrid>
+                        </center>
+                        <p:spacer height="5"/>  
+                        <p:growl id="growl1" sticky="true"/>
+                        <p:dataTable value="#{customizeColumnsController.queryColumns}" var="reportCol"
+                                     editable="true" paginator="true" rows="10" 
+                                     rowsPerPageTemplate="10,20,50" id="columnTable">
+                            <p:column>
+                                <f:facet name="header">Column Name</f:facet>
+                                <h:outputText value="#{reportCol.originalName}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Prefered Name</f:facet>
+                                <p:inputText value="#{reportCol.prefferedName}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Format As</f:facet>
+                                <p:selectOneMenu value="#{reportCol.formatAs}">
+                                    <f:selectItem itemLabel="Select..." itemValue=""/>
+                                    <f:selectItem itemLabel="Amount" itemValue="Amount"/>
+                                    <f:selectItem itemLabel="Number" itemValue="Number"/>
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Mask Data</f:facet>
+                                <p:selectBooleanCheckbox value="#{reportCol.dataMasked}">
+                                    <p:ajax update=":pForm:columnTable"/>
+                                </p:selectBooleanCheckbox>
+                                <p:panelGrid columns="2" rendered="#{reportCol.dataMasked}">
+                                    <p:outputLabel for="leftDigitLabel" value="Left: "/>
+                                    <p:inputText value="#{reportCol.leftDigit}" id="leftDigitLabel"
+                                                 required="true" 
+                                                 requiredMessage="Left and Right visible digits must be specified"/>
+                                    <p:outputLabel for="rightDigitLabel" value="Right: "/>
+                                    <p:inputText value="#{reportCol.rightDigit}" id="rightDigitLabel"
+                                                 required="true"
+                                                 requiredMessage="Left and Right visible digits must be specified"/>
+                                </p:panelGrid>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Render As Link</f:facet>
+                                <p:selectBooleanCheckbox value="#{reportCol.link}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                        <p:spacer height="80"/>  
+
+                    </h:form>
+                    <br/><br/><br/>
+            </div>
+        </div>
+    </ui:define>
+    
+</ui:composition>

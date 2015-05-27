@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./adminTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <ui:define name="adminContent">
+
+        <div class="container">
+            <div class="row">
+                <p:messages id="msgs" closable="true"/>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div style="margin-left: 100px;">
+                            <p:panel header="Edit Report" style="width: 1000px;">
+                                <h:form>
+                                    <p:panelGrid columns="2">
+                                        <h:outputText value="Id:"/>
+                                        <h:outputText value="#{setupController.selectedReport.id}" title="Id"/>
+                                        <h:outputText value="ReportName:"/>
+                                        <h:outputText value="#{setupController.selectedReport.reportName}" title="ReportName"/>
+                                        <h:outputText value="ReportDescription:"/>
+                                        <h:outputText value="#{setupController.selectedReport.reportDescription}" title="ReportDescription"/>
+                                        <h:outputText value="DateCreated:"/>
+                                        <h:outputText value="#{setupController.selectedReport.dateCreated}" title="DateCreated">
+                                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                                        </h:outputText>
+                                        <h:outputText value="CreatedBy:"/>
+                                        <h:outputText value="#{setupController.selectedReport.createdBy}" title="CreatedBy"/>
+                                        <h:outputText value="ReportQuery:"/>
+                                        <h:outputText value="#{setupController.selectedReport.reportQuery}" title="ReportQuery"/>
+                                        <h:outputText value="Downloadable:"/>
+                                        <h:outputText value="#{setupController.selectedReport.downloadable}" title="Downloadable"/>
+                                        <h:outputText value="ConnectionProfile:"/>
+                                        <h:outputText 
+                                            value="#{setupController.selectedReport.connectionProfile.profileName} - #{setupController.selectedReport.connectionProfile.ipAdd}" 
+                                            title="ConnectionProfile"/>
+                                        <h:outputText value="Confidential:"/>
+                                        <h:outputText value="#{setupController.selectedReport.confidential}" title="Confidential"/>
+                                    </p:panelGrid>
+                                </h:form>
+                                <h:form>
+                                    <p:panelGrid columns="3" style="float: right;">
+                                        <h:commandLink styleClass="btn-lg"
+                                                       style="float: right;"
+                                                       action="/admin/editReport?faces-redirect=true">
+                                            <span class="glyphicon glyphicon-pencil">  </span>
+                                            Edit
+                                        </h:commandLink>
+                                        <h:commandLink styleClass="btn-lg"
+                                                       style="float: right;"
+                                                       action="/admin/reportSetup?faces-redirect=true"
+                                                       actionListener="#{setupController.testRunSelectedReport()}">
+                                            <span class="glyphicon glyphicon-wrench">  </span>
+                                            Modify
+                                        </h:commandLink>
+                                        <h:commandLink styleClass="btn-lg" value="Cancel"
+                                                       style="float: right;"
+                                                       action="/admin/reports?faces-redirect=true">
+                                            <span class="glyphicon glyphicon-arrow-left">  </span>
+                                        </h:commandLink>
+                                    </p:panelGrid>
+                                </h:form>
+                            </p:panel>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

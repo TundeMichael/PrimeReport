@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Power Reporter</title>
+        <h:outputStylesheet name="css/bootstrap.min.css"/>
+    </h:head>
+    <h:body>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-1">
+
+                </div>
+                <div class="col-md-11">
+
+                    <p>
+                        <h1>Power Reporter</h1>
+                    </p>
+
+                    <h:form id="formA">
+
+                        <p:panel header="Database Connection Parameters" toggleable="true">
+
+                            <p:growl id="msgs"/>
+
+                            <p:panelGrid columns="6">   
+                                <p:outputLabel for="profileName" value="Profile Name: "/>
+                                <p:inputText id="profileName" value="#{setupController.reportProfile.profileName}" required="true"/>
+                                <p:outputLabel for="ipd" value="IP Address: "/>
+                                <p:inputText id="ipd" value="#{setupController.reportProfile.ipAdd}" required="true"/>
+                                <p:outputLabel for="portNo" value="Port No: "/>
+                                <p:inputText id="portNo" value="#{setupController.reportProfile.portNo}" required="true"/>
+                                <p:outputLabel for="databaseName" value="Database Name: "/>
+                                <p:inputText id="databaseName" value="#{setupController.reportProfile.databaseName}" required="true"/>
+                                <p:outputLabel for="username" value="Username: "/>
+                                <p:inputText value="#{setupController.reportProfile.username}" id="username" required="true"/>
+                                <p:outputLabel for="password" value="Password: "/>
+                                <p:inputText value="#{setupController.reportProfile.password}" id="password" 
+                                             required="true"/>
+                                <p:outputLabel for="databaseType" value="Database Type: "/>
+                                <h:selectOneMenu value="#{setupController.reportProfile.databaseType}" 
+                                                 id="databaseType" required="true">
+                                    <f:selectItem itemLabel="Select..." itemValue=""/>
+                                    <f:selectItem itemLabel="MySQL" itemValue="mysql"/>
+                                    <f:selectItem itemLabel="Sybase" itemValue="sybase"/>
+                                    <f:selectItem itemLabel="Oracle" itemValue="oracle"/>
+                                </h:selectOneMenu>
+                                <h:commandButton value="Get Tables" action="#{setupController.retrieveTables()}"/>
+                            </p:panelGrid>
+
+                        </p:panel>
+
+
+                        <p:panel header="Table Details" toggleable="true">
+                            <p:panelGrid id="tableGrid" columns="2">
+                                <p:dataTable id="tableTable" value="#{setupController.tables}" var="table" selectionMode="single"
+                                             selection="#{setupController.selectedTable}" rowKey="#{table}" paginator="true"
+                                             rows="30" rowsPerPageTemplate="5,10,15,20,25,30"
+                                             >
+                                    <p:ajax event="rowSelect" process="tableTable" update=":formA:columnTable"/>
+                                    <p:column>
+                                        <f:facet name="header">Database Tables (Total:: #{setupController.tables.size()})</f:facet>
+                                        <h:outputText value="#{table}"/>
+                                    </p:column>
+                                </p:dataTable>
+                                <p:panel header="Table:::#{setupController.selectedTable}">
+                                    <p:dataTable id="columnTable" value="#{setupController.columns}" var="col">
+                                        <p:column>
+                                            <f:facet name="header">Column Name</f:facet>
+                                            <h:outputText value="#{col.originalName}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">Data Type</f:facet>
+                                            <h:outputText value="#{col.prefferedName}"/>
+                                        </p:column>
+                                        <f:facet name="footer">
+                                            <h:commandButton value="Render Report" 
+                                                             action="#{setupController.renderPreview}"/>
+                                        </f:facet>
+                                    </p:dataTable>
+                                </p:panel>
+
+
+                            </p:panelGrid>
+                        </p:panel>
+
+
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+
+                    </h:form>
+
+
+                </div>
+            </div>
+        </div>
+
+    </h:body>
+</html>
+

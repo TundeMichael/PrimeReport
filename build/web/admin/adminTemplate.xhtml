@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../WEB-INF/template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <ui:define name="title">
+        <ui:insert name="adminTitle">Admin Title</ui:insert>
+    </ui:define>
+
+    <ui:define name="navBar">
+        <div class="container-fluid">
+            <p:growl id="growl" life="3000" />
+
+            <h:form id="menuForm">
+                <p:menubar>
+                    <p:menuitem value="Home" outcome="/admin/index" icon="ui-icon-home"/>
+                    <p:menuitem value="Database Profiles" action="/admin/profileSetup?faces-redirect=true"
+                                icon="ui-icon-search"/>
+                    <p:menuitem value="Reports" action="/admin/reports?faces-redirect=true"
+                                icon="ui-icon-search"/>
+                    <p:menuitem value="System Users" action="/admin/users?faces-redirect=true" 
+                                icon="ui-icon-search"/>
+                    <p:menuitem value="User Groups" action="/admin/groups?faces-redirect=true"
+                                icon="ui-icon-search"/>
+                </p:menubar>
+            </h:form>
+        </div>
+    </ui:define>
+
+
+    <ui:define name="content">
+        <ui:insert name="adminContent">Admin Content Here</ui:insert>
+    </ui:define>
+
+</ui:composition>
