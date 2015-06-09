@@ -82,8 +82,8 @@ public class PreviewReportController implements Serializable {
             for (int i = 0; i < queryColumns.size(); i++) {
                 this.headings[i] = queryColumns.get(i).getPrefferedName();
             }
-        }else {
-           queryColumns = new ArrayList<>();
+        } else {
+            queryColumns = new ArrayList<>();
         }
 
         Application application = FacesContext.getCurrentInstance().getApplication();
@@ -504,10 +504,21 @@ public class PreviewReportController implements Serializable {
                 value = parameters.get(p.getLabel().replaceAll("\\s+", "")).toString();
             }
 
+            String qp = p.getQueryPosition().substring(1);
+            qp = qp.substring(0, qp.length() - 1);
+            if (qp.startsWith("%")) {
+                value = "%" + value;
+            }
+            
+            if (qp.endsWith("%")) {
+                value = value + "%";
+            }
+
             String dataType = p.getDataType();
             if ("String".equals(dataType) || "Date".equals(dataType)) {
                 value = "'" + value.trim() + "'";
             }
+
             this.query = this.query.replaceAll(p.getQueryPosition(), value);
         }
         Message.addSuccessMessage("Query: " + this.query);
